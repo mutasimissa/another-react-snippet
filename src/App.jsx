@@ -1,9 +1,8 @@
-import './App.css'
-import { MeetTheTeam } from './pages/MeetTheTeam'
-function App() {
-  return (
-    <MeetTheTeam />
-  )
-}
+import "./App.css";
+import { Loading } from "./components/Loading";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 
-export default App
+export const App = () => {
+  return <RouterProvider router={router} fallbackElement={<Loading />} />;
+};

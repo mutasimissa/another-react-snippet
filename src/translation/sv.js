@@ -1,3 +1,3 @@
 export const sv = {
-    hello: "Hej"
+    'meet-the-team-page-title': "Meet the Team"
 }

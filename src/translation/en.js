@@ -1,3 +1,3 @@
 export const en = {
-    hello: "Hello"
+    'meet-the-team-page-title': "Meet the Team"
 }
