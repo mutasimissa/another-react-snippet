@@ -15,20 +15,13 @@ body {
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
-.page-title {
-  font-size: 48px;
-  font-weight: 400;
-  line-height: 56.3px;
-  font-family: Impact;
-  color: rgba(0, 0, 0, 0.8);
-  margin-top: 75px;
-  margin-left: 15%;
+.spacing {
+  flex-grow: 1;
+  order: 2;
 }
-@media only screen and (max-width: 600px) {
-  .page-title {
-    font-size: 24px;
-    line-height: 28.15px;
-    margin-top: 70px;
-    margin-left: 15%;
+
+@media screen and (max-width: 768px) {
+  .spacing{
+      order: 2;
   }
 }

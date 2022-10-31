@@ -1,40 +1,56 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { API } from "../API";
 import {
-  ListPage,
-  ListPageToolbar,
-  Filter,
-  SearchInput,
-  ListViewTypeToggler,
-  PaginatedList,
-  ContactPersonCard
-} from '../components'
+  Page,
+  PageToolbar,
+  PageToolbarSearch,
+  PageToolbarSort,
+  PageToolbarViewTypeToggler,
+  PageCardsView,
+} from "../components/Page";
+import { TeamMemberGrid, TeamMemberList } from "../components/TeamMember";
+import { useTeamMembersQuery } from "../hooks/query/useTeamMembersQuery";
 
 export const MeetTheTeam = () => {
   const { t: trasnlate } = useTranslation();
-  const [teamData, setTeamData] = useState([]);
-  const [viewType, setViewType] = useState("grid")
-  const [searchInputText, setSearchInputText] = useState('')
-  //const [ filter, setFilter ] = useState('asc')
-  useEffect(() => {
-    const getTeamData = async () => {
-      let data = await new API('https://randomuser.me/api').getAll("/", "results=50"); //yes it's better to pass params as object TODO
-      data = data?.results[0] ? data.results : [];
-      setTeamData(data);
-    };
-    getTeamData();
+  const [page, setPage] = useState(1);
+  const { data, error, isFetching } = useTeamMembersQuery(page);
+  const [gridView, setGridView] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
+  const [filter, setFilter] = useState("a-z");
+  const toggleViewHandler = useCallback(() => {
+    setGridView((prevState) => !prevState);
   }, []);
+  const searchInputChangeHandler = useCallback((e) => {
+    setSearchInput(e.target.value);
+  });
+  const filtersToggleHandler = useCallback(() => {
+    setFilter((prev) => (prev === "a-z" ? "z-a" : "a-z"));
+  });
   return (
-    <ListPage title={trasnlate("meet-the-team-page-title")}>
-      <ListPageToolbar>
-        <Filter />
-        <SearchInput setSearchInputText={(searchInputText)=>setSearchInputText(searchInputText)}/>
-        <ListViewTypeToggler setViewType={(viewType)=>setViewType(viewType)}/>
-      </ListPageToolbar>
-      <PaginatedList data={teamData} viewType={viewType} searchInputText={searchInputText}>
-        <ContactPersonCard />
-      </PaginatedList>
-    </ListPage>
+    <Page title={trasnlate("meet-the-team-page-title")}>
+      <PageToolbar>
+        <PageToolbarSort clickHandler={filtersToggleHandler} />
+        <PageToolbarSearch
+          val={searchInput}
+          changeHandler={searchInputChangeHandler}
+        />
+        <div className="spacing" /> {/*TODO*/}
+        <PageToolbarViewTypeToggler
+          gridView={gridView}
+          toggleView={toggleViewHandler}
+        />
+      </PageToolbar>
+      <PageCardsView
+        Grid={TeamMemberGrid}
+        List={TeamMemberList}
+        data={data}
+        gridView={gridView}
+        loading={isFetching}
+        search={searchInput}
+        filter={filter}
+        error={error}
+      />
+    </Page>
   );
 };
